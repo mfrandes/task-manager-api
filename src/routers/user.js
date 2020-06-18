@@ -9,7 +9,6 @@ const router = new express.Router();
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body);
-    // user.save().then(result => res.status(201).send(result)).catch(err => res.status(400).send(err));
     try {
         await user.save();
         sendWelcomeEmail(user.email, user.name)
@@ -78,9 +77,6 @@ router.patch('/users/me', auth, async (req, res) => {
 
 router.delete('/users/me', auth, async (req, res) => {
     try {
-        // const user = await User.findByIdAndDelete(req.user._id);
-        // return user ? res.send(user) : res.status(404).send({ error: 'User not found' });
-
         await req.user.remove();
         sendCancelation(req.user.email, req.user.name);
         res.send(req.user)
@@ -89,8 +85,6 @@ router.delete('/users/me', auth, async (req, res) => {
         res.status(500).send(error);
     }
 })
-
-
 
 router.post('/users/me/avatar', auth, uploadAvatar.single('avatar'), async (req, res) => {
     const buffer = await sharp(req.file.buffer).resize({
